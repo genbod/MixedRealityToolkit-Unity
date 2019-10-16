@@ -126,11 +126,6 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
             var items = list.Item(0);
             items.AppendChild(newElement);
 
-            // Replace Version
-            nsmgr.AddNamespace("default", "http://schemas.microsoft.com/appx/manifest/foundation/windows10");
-            var identity = root.SelectSingleNode("descendant::default:Identity", nsmgr);
-            identity.Attributes["Version"].Value = "#{PackageVersion}#";
-
             doc.Save(filePath);
         }
 
@@ -175,10 +170,13 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
                         UwpAppxBuildTools.AddGazeInputCapability(uwpBuildInfo);
                     }
                     Debug.Log($"LiveCubeModelLocation: {BuildDeployPreferences.LiveCubeModelLocation}, Destination: {buildDirectory}");
-                    FileUtil.ReplaceFile(BuildDeployPreferences.LiveCubeModelLocation, $"{buildDirectory}/{PlayerSettings.productName}/Assets/LiveCubeModel.glb");
-                    AddLiveCubeModelToProject($"{buildDirectory}/{PlayerSettings.productName}/{PlayerSettings.productName}.vcxproj");
-                    AddLiveCubeModelToFilter($"{buildDirectory}/{PlayerSettings.productName}/{PlayerSettings.productName}.vcxproj.filters");
-                    UpdateManifest($"{buildDirectory}/{PlayerSettings.productName}/Package.appxmanifest");
+                    if (!String.IsNullOrEmpty(BuildDeployPreferences.LiveCubeModelLocation))
+                    {
+                        FileUtil.ReplaceFile(BuildDeployPreferences.LiveCubeModelLocation, $"{buildDirectory}/{PlayerSettings.productName}/Assets/LiveCubeModel.glb");
+                        AddLiveCubeModelToProject($"{buildDirectory}/{PlayerSettings.productName}/{PlayerSettings.productName}.vcxproj");
+                        AddLiveCubeModelToFilter($"{buildDirectory}/{PlayerSettings.productName}/{PlayerSettings.productName}.vcxproj.filters");
+                        UpdateManifest($"{buildDirectory}/{PlayerSettings.productName}/Package.appxmanifest");
+                    }
 
                     if (showDialog &&
                         !EditorUtility.DisplayDialog(PlayerSettings.productName, "Build Complete", "OK", "Build AppX"))
