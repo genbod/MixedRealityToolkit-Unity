@@ -74,9 +74,9 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
         private readonly GUIContent buildDirectoryLabel = new GUIContent("Build Directory", "It's recommended to use 'UWP'");
 
         private readonly GUIContent useCSharpProjectsLabel = new GUIContent("Generate C# Debug", "Generate C# Project References for debugging.\nOnly available in .NET Scripting runtime.");
-        
+
         private readonly GUIContent gazeInputCapabilityLabel =
-            new GUIContent("Gaze Input Capability", 
+            new GUIContent("Gaze Input Capability",
                            "If checked, the 'Gaze Input' capability will be added to the AppX manifest after the Unity build.");
 
         private readonly GUIContent autoIncrementLabel = new GUIContent("Auto Increment", "Increases Version Build Number");
@@ -96,6 +96,8 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
         private readonly GUIContent doAllLabel = new GUIContent(" Do actions on all devices", "Should the build options perform actions on all the connected devices?");
 
         private readonly GUIContent uninstallLabel = new GUIContent("Uninstall First", "Uninstall application before installing");
+
+        private readonly GUIContent liveCubeModelLabel = new GUIContent("Live Cube Model", "Location of .glb model to use as 3D Launcher");
 
         #endregion Labels
 
@@ -382,6 +384,22 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
 
+            EditorGUILayout.BeginHorizontal();
+
+            // 3D Launcher Model
+            string curLiveCubeModelLocation = BuildDeployPreferences.LiveCubeModelLocation;
+            var curGlbModel = AssetDatabase.LoadAssetAtPath(curLiveCubeModelLocation, typeof(GameObject));
+            EditorGUILayout.LabelField(liveCubeModelLabel, GUILayout.Width(96));
+            GameObject newGlbModel = (GameObject)EditorGUILayout.ObjectField(curGlbModel, typeof(GameObject), false);
+            string newLiveCubeModelLocation = AssetDatabase.GetAssetPath(newGlbModel);
+            if (newLiveCubeModelLocation != curLiveCubeModelLocation)
+            {
+                BuildDeployPreferences.LiveCubeModelLocation = newLiveCubeModelLocation;
+            }
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+
             // Build Unity Player
             GUI.enabled = ShouldBuildSLNBeEnabled;
 
@@ -528,7 +546,7 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
             {
                 UwpBuildDeployPreferences.GazeInputCapabilityEnabled = newGazeInputCapabilityEnabled;
             }
-            
+
             GUILayout.BeginHorizontal();
 
             var prevFieldWidth = EditorGUIUtility.fieldWidth;
