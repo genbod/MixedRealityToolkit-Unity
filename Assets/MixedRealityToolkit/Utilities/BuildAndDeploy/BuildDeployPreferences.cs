@@ -22,7 +22,7 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
 
         private static BuildDeployPreferencesSO _savedPreferences;
 
-        private const string _savedPreferencesLocation = "Assets/Editor/SavedBuildDeployPreferences.asset";
+        private const string _savedPreferencesLocation = "Assets/SavedBuildDeployPreferences.asset";
 
         static BuildDeployPreferences()
         {
