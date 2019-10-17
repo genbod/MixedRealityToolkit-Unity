@@ -81,9 +81,9 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
         private readonly GUIContent buildDirectoryLabel = new GUIContent("Build Directory", "It's recommended to use 'UWP'");
 
         private readonly GUIContent useCSharpProjectsLabel = new GUIContent("Generate C# Debug", "Generate C# Project References for debugging.\nOnly available in .NET Scripting runtime.");
-        
+
         private readonly GUIContent gazeInputCapabilityLabel =
-            new GUIContent("Gaze Input Capability", 
+            new GUIContent("Gaze Input Capability",
                            "If checked, the 'Gaze Input' capability will be added to the AppX manifest after the Unity build.");
 
         private readonly GUIContent autoIncrementLabel = new GUIContent("Auto Increment", "Increases Version Build Number");
@@ -107,6 +107,8 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
         private readonly GUIContent researchModeCapabilityLabel = new GUIContent("Enable Research Mode", "Enables research mode of HoloLens. This allows access to raw sensor data.");
 
         private readonly GUIContent allowUnsafeCode = new GUIContent("Allow Unsafe Code", "Modify 'Assembly-CSharp.csproj' to allow use of unsafe code. Be careful using this in production.");
+
+        private readonly GUIContent liveCubeModelLabel = new GUIContent("Live Cube Model", "Location of .glb model to use as 3D Launcher");
 
         #endregion Labels
 
@@ -414,6 +416,21 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
                     }
                 }
                 EditorGUILayout.Space();
+                EditorGUILayout.BeginHorizontal();
+
+                // 3D Launcher Model
+                string curLiveCubeModelLocation = BuildDeployPreferences.LiveCubeModelLocation;
+                var curGlbModel = AssetDatabase.LoadAssetAtPath(curLiveCubeModelLocation, typeof(GameObject));
+                EditorGUILayout.LabelField(liveCubeModelLabel, GUILayout.Width(96));
+                GameObject newGlbModel = (GameObject)EditorGUILayout.ObjectField(curGlbModel, typeof(GameObject), false);
+                string newLiveCubeModelLocation = AssetDatabase.GetAssetPath(newGlbModel);
+                if (newLiveCubeModelLocation != curLiveCubeModelLocation)
+                {
+                    BuildDeployPreferences.LiveCubeModelLocation = newLiveCubeModelLocation;
+                }
+
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.Space();
 
                 // Build Unity Player
                 GUI.enabled = ShouldBuildSLNBeEnabled;
@@ -435,7 +452,7 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
             // Note that this is the 'Target SDK Version' which is required to physically build the
             // code on a build machine, not the minimum platform version.
             string currentSDKVersion = EditorUserBuildSettings.wsaUWPSDK;
-            
+
             Version chosenSDKVersion = null;
             for (var i = 0; i < windowsSdkVersions.Count; i++)
             {
@@ -486,7 +503,7 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
                 EditorGUILayout.HelpBox(
                     "Minimum platform version is set to a different value from the recommended value: " +
                         $"{UwpBuildDeployPreferences.MIN_PLATFORM_VERSION}, the generated app may not be deployable to older generation devices. " +
-                        $"Consider updating the 'Minimum Platform Version' in the Build Settings window to match {UwpBuildDeployPreferences.MIN_PLATFORM_VERSION}" ,
+                        $"Consider updating the 'Minimum Platform Version' in the Build Settings window to match {UwpBuildDeployPreferences.MIN_PLATFORM_VERSION}",
                     MessageType.Warning);
             }
 
@@ -578,7 +595,7 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
             {
                 platformToolset = PlatformToolset.Solution;
             }
-            else if(currentPlatformToolsetString.ToLower().Equals(PlatformToolset.v141.ToString().ToLower()))
+            else if (currentPlatformToolsetString.ToLower().Equals(PlatformToolset.v141.ToString().ToLower()))
             {
                 platformToolset = PlatformToolset.v141;
             }
@@ -606,7 +623,7 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
             {
                 UwpBuildDeployPreferences.GazeInputCapabilityEnabled = newGazeInputCapabilityEnabled;
             }
-            
+
             GUILayout.BeginHorizontal();
 
             var prevFieldWidth = EditorGUIUtility.fieldWidth;
