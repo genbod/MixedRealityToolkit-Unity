@@ -181,7 +181,6 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
                         FileUtil.ReplaceFile(BuildDeployPreferences.LiveCubeModelLocation, $"{buildDirectory}/{PlayerSettings.productName}/Assets/LiveCubeModel.glb");
                         AddLiveCubeModelToProject($"{buildDirectory}/{PlayerSettings.productName}/{PlayerSettings.productName}.vcxproj");
                         AddLiveCubeModelToFilter($"{buildDirectory}/{PlayerSettings.productName}/{PlayerSettings.productName}.vcxproj.filters");
-                        UpdateManifest($"{buildDirectory}/{PlayerSettings.productName}/Package.appxmanifest");
                     }
 
                     if (showDialog &&
