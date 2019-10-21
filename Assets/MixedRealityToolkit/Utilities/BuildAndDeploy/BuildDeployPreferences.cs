@@ -26,6 +26,11 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
 
         static BuildDeployPreferences()
         {
+            _initSavedBuildDeployPreferences();
+        }
+
+        private static void _initSavedBuildDeployPreferences()
+        {
             string[] result = AssetDatabase.FindAssets("SavedBuildDeployPreferences");
 
             if (result.Length != 0)
@@ -52,7 +57,14 @@ namespace Microsoft.MixedReality.Toolkit.Build.Editor
         /// </remarks>
         public static string BuildDirectory
         {
-            get => $"{_savedPreferences.BuildDirectory}/{EditorUserBuildSettings.activeBuildTarget}";
+            get
+            {
+                if (_savedPreferences == null)
+                {
+                    _initSavedBuildDeployPreferences();
+                }
+                return $"{_savedPreferences.BuildDirectory}/{EditorUserBuildSettings.activeBuildTarget}";
+            }
             set
             {
                 _savedPreferences.BuildDirectory = value.Replace($"/{EditorUserBuildSettings.activeBuildTarget}", string.Empty);
